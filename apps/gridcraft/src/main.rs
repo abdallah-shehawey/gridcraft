@@ -340,7 +340,9 @@ fn main() -> eframe::Result<()> {
     if let Some(i) = icon() {
         viewport = viewport.with_icon(i);
     }
-    let options = eframe::NativeOptions { viewport, ..Default::default() };
+    // No-preferences and control-channel runs neither restore nor save the native window, so
+    // control-channel screenshots start from the same window every time.
+    let options = eframe::NativeOptions { viewport, persist_window: prefs_enabled() && control_port.is_none(), ..Default::default() };
     // Before eframe creates the wgpu instance: Windows starts on DirectX 12, or OpenGL when
     // DirectX 12 has no GPU driver, and never touches Vulkan unless asked (see graphics.rs).
     #[cfg(target_os = "windows")]
